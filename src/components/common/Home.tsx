@@ -51,7 +51,7 @@ const Home = () => {
   const handleSearch = () => {
     if (!map || !searchRef.current) return;
 
-    // 검색어 입력값이 없는 경우, 날짜 필터만 적용해서 상품 검색
+    // 검색어 입력값이 없는 경우, 날짜 필터만 적용해서 상품 노출
     if (searchRef.current.value === "") {
       setSearchInfo({
         ...searchInfo,
@@ -61,7 +61,7 @@ const Home = () => {
       return;
     }
 
-    //검색어 입력값이 있는 경우, 지도를 이동한 후 상품 검색
+    //검색어 입력값이 있는 경우, 지도를 검색 결과로 이동한 후 상품 노출
     const ps = new kakao.maps.services.Places(map);
     ps.keywordSearch(`${searchRef.current.value}`, placeSearchCB);
 

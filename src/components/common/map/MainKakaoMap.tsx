@@ -54,22 +54,29 @@ const MainKakaoMap = ({
   const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
   const setAlertText = useBoundStore((state) => state.setAlertText);
 
+// 해당하는 지도 위의 아이템(주차장)을 DB에 요청하여 노출하는 함수
+const searchProducts = async () => {
+  if (!map) return;
 
+  const bound = map.getBounds();
+  const res = await searchItemsInThisBound(bound, searchInfo.period);
+
+  setMarkers(res); // 마커변경출력
+  setProducts(res); // 리스트변경출력
+};
+
+//지도가 셍성되면 지도 위 아이템 노출
   useEffect(() => {
-    // 해당하는 bounds영역에 맞는 범위의 상품리스트 요청
     searchProducts();
-  }, [mapExist, searchInfo]);
+  }, [mapExist]);
 
-  // 해당하는 주차장 쿼리 요청 함수
-  const searchProducts = async () => {
-    if (!map) return;
 
-    const bound = map.getBounds();
-    const res = await searchItemsInThisBound(bound, searchInfo.period);
+//SearchInput 컴포넌트에서 searchInfo를 업데이트하면, 맵 컴포넌트에서 지도 위 아이템 노출
+  useEffect(() => {
+    searchProducts();
+  }, [searchInfo]);
 
-    setMarkers(res); // 마커변경출력
-    setProducts(res); // 리스트변경출력
-  };
+
 
   // 현위치 버튼 클릭시,
   const handleToggleLocation = () => {
