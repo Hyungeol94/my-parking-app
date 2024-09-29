@@ -5,15 +5,15 @@
 ![image](https://i.ibb.co/KxvRbYc/image.png)
 <h3>도심 속 주차장 예약 서비스🚙 🛻</h3><br>
 
-<b>[마이파킹 앱 바로가기](https://myparking.netlify.app/)</b> <br>
+<b>[마이파킹 앱 바로가기](https://my-parking-project.netlify.app/)</b> <br>
 
 <b>일반회원</b>
-Test ID : `test@user.com` <br>
-Test PW : `user1234!` <br>
+Test ID : `user123@user.com` <br>
+Test PW : `user123!` <br>
 
 <b>판매회원</b>
-Test ID : `test@seller.com` <br>
-Test PW : `seller1234!` <br>
+Test ID : `seller123@seller.com` <br>
+Test PW : `seller123!` <br>
 
 <br> 
 </div>
