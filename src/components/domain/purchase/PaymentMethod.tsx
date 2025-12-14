@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { CommonButtonSmall } from "../../UI/CommonButton";
-import { useBoundStore } from "../../../store";
+import { useAuthSlice, usePurchaseSlice, useThemeSlice } from "../../../store";
 import useCustomAxios from "../../../services/useCustomAxios";
 
 declare global {
@@ -23,12 +23,10 @@ interface PaymentMethodProps {
 const PaymentMethod = ({ disabled, paymentOption }: PaymentMethodProps) => {
   const navigate = useNavigate();
   const axiosInstance = useCustomAxios();
-  const userBasicInfo = useBoundStore((state) => state.userBasicInfo);
-  const productDetailData = useBoundStore((state) => state.productDetailData);
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
-  const setAlertText = useBoundStore((state) => state.setAlertText);
-  const setBgColor = useBoundStore((state) => state.setBgColor);
-
+  const { userBasicInfo } =  useAuthSlice();
+  const { productDetailData } = usePurchaseSlice();
+  const { setIsToastOpen, setAlertText, setBgColor } = useThemeSlice();
+  
   console.log(productDetailData);
 
   function onClickPayment() {

@@ -5,13 +5,13 @@ import { Box } from "@mui/system";
 import { Button } from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 
-import { useBoundStore } from "../../../../store";
+import { useMyPageSlice, useThemeSlice } from "../../../../store";
 import DEFAUlT_AVATAR from "../../../../assets/images/default-avatar.png";
 
 const SellerInfoComponent = ({ product }: { product: ProductItemType }) => {
   const navigate = useNavigate();
-  const isDark = useBoundStore((state) => state.isDark);
-  const userInfo = useBoundStore((state) => state.myInfo);
+  const { isDark }  = useThemeSlice();
+  const { myInfo: userInfo } = useMyPageSlice();
 
   // 문제 :  현재 로그인한 유저의 이미지가 보여버림
   // 등록한 판매자의 이미지가 보여야함

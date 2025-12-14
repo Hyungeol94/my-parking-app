@@ -9,7 +9,7 @@ import PriceAndBtnComponent from "./PriceAndBtnComponent";
 import classes from "./ProductDetail.module.css";
 import Loading from "../../../common/Loading";
 import useCustomAxios from "../../../../services/useCustomAxios";
-import { useBoundStore } from "../../../../store";
+import { useAuthSlice, useThemeSlice, usePurchaseSlice } from "../../../../store";
 import { Toast } from "../../../UI/Toast";
 
 const ProductDetail = () => {
@@ -17,10 +17,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const axiosInstance = useCustomAxios();
 
-  const isToastOpen = useBoundStore((state) => state.isToastOpen);
-  const alertText = useBoundStore((state) => state.alertText);
-  const setAlertText = useBoundStore((state) => state.setAlertText);
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
+  const { isToastOpen, alertText, setAlertText, setIsToastOpen }  = useThemeSlice();
 
   const [loading, setLoading] = useState(true);
   const [productData, setProductData] = useState<ProductItemType>({
@@ -40,10 +37,8 @@ const ProductDetail = () => {
     replies: [],
   });
 
-  const setProductDetailData = useBoundStore(
-    (state) => state.setProductDetailData
-  );
-  const user = useBoundStore((state) => state.userBasicInfo);
+  const { setProductDetailData } = usePurchaseSlice();
+  const { userBasicInfo: user } = useAuthSlice();
   // 로그인한 유저가 판매자이면서, 본인이 작성한 글일때만 수정,삭제 버튼 나오는 상태변수 선언
   const isRightUser =
     user.type === "seller" && user._id === productData.seller_id;

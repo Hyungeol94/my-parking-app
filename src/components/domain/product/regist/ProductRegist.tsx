@@ -2,17 +2,15 @@ import { useNavigate } from "react-router-dom";
 
 import ProductForm from "./ProductForm";
 import useCustomAxios from "../../../../services/useCustomAxios";
-import { useBoundStore } from "../../../../store/index";
+import { useAuthSlice, useThemeSlice } from "../../../../store/index";
 
 const ProductRegist = () => {
   const navigate = useNavigate();
   const axiosInstance = useCustomAxios();
-
-  const setAlertText = useBoundStore((state) => state.setAlertText);
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
+  const { setAlertText, setIsToastOpen } = useThemeSlice();
 
   //로그인 한 user의 name
-  const userBasicInfo = useBoundStore((state) => state.userBasicInfo);
+  const { userBasicInfo } = useAuthSlice();
 
   const initialProduct: ProductItemType = {
     name: "",

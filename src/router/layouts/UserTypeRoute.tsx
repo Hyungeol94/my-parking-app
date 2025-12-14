@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useBoundStore } from "../../store";
+import { useAuthSlice } from "../../store";
 
 interface Props {
   userType: string;
@@ -7,8 +7,8 @@ interface Props {
 // 유저 타입과 현재 로그인한 유저정보에서 유저 타입이 각각 seller와 user일때, 각각 해당하는 타입으로 조건이 맞지 않으면 에러메시지와, 알람을 주고 에러 페이지로 Navigate 해준다.(Navigate컴포넌트 시도)
 // 조건이 맞다면 Outlet 리턴
 const UserTypeRoute = ({ userType }: Props) => {
-  // console.log(userType);
-  const userInfo = useBoundStore((state) => state.userBasicInfo);
+
+  const { userBasicInfo: userInfo } = useAuthSlice();
 
   if (userType === "seller") {
     if (userInfo.type === userType) {

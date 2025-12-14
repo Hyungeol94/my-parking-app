@@ -5,13 +5,12 @@ import { useNavigate } from "react-router-dom";
 import classes from "./PurchaseResult.module.css";
 import { useEffect } from "react";
 import { Toast } from "../../UI/Toast";
-import { useBoundStore } from "../../../store";
+import { useThemeSlice } from "../../../store";
 
 const PurchaseResult = () => {
   const navigate = useNavigate();
-  const isToastOpen = useBoundStore((state) => state.isToastOpen);
-  const alertText = useBoundStore((state) => state.alertText);
-  const bgColor = useBoundStore((state) => state.bgColor);
+  const { isToastOpen, alertText, bgColor } = useThemeSlice()
+  
   useEffect(() => {
     const handleBeforeUnload = () => {
       //결제완료 페이지에서 뒤로가기 눌렀을 때 home 으로 이동
