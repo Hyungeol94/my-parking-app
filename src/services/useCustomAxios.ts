@@ -1,18 +1,15 @@
 import axios from "axios";
 import mem from "mem";
 import { BASE_URL } from "./BaseUrl";
-import { useBoundStore } from "../store";
+import { useAuthSlice } from "../store";
 import { useNavigate } from "react-router-dom";
 
 // 리플래쉬 토큰 앤드포인트 경로
 const REFRESH_URL = "/users/refresh"; // 리프래쉬 토큰을 서버에 보내는 주소 -> 서버에서 새로운 엑세스 토큰 보내줌
 
 const useCustomAxios = () => {
-  const user = useBoundStore((state) => state.userBasicInfo);
-  const userAccToken = useBoundStore((state) => state.userToken.accessToken);
-  const userRefToken = useBoundStore((state) => state.userToken.refreshToken);
-  const logout = useBoundStore((state) => state.logout);
-  const setUser = useBoundStore((state) => state.updateUserBasicInfo);
+const { userBasicInfo: user, userToken, logout, updateUserBasicInfo: setUser } = useAuthSlice();
+const { accessToken: userAccToken, refreshToken: userRefToken } = userToken || {};
 
   const navigate = useNavigate();
 
