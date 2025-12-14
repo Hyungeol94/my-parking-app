@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { CardMedia, Typography } from "@mui/material";
 import { CommonButton } from "../../../UI/CommonButton";
 import OrderTotalPrice from "./OrderTotalPrice";
-import { useBoundStore } from "../../../../store";
+import { useThemeSlice } from "../../../../store";
 import MediaQuery from "../../../UI/MediaQuery";
 import classes from "./OrderCard.module.css";
 
@@ -41,7 +41,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
   disabled,
   // sellerId,
 }) => {
-  const isDark = useBoundStore((state) => state.isDark);
+  const { isDark } = useThemeSlice();
   const isMobile = MediaQuery();
   {
     orderItems;

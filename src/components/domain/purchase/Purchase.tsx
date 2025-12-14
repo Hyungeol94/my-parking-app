@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PurchaseForm from "./PurchaseForm";
 import OrderCard from "../order-history/ordercard/OrderCard";
-import { useBoundStore } from "../../../store";
+import { usePurchaseSlice, useThemeSlice } from "../../../store";
 import { BASE_URL } from "../../../services/BaseUrl";
 import classes from "./purchase.module.css";
 import MediaQuery from "../../UI/MediaQuery";
@@ -10,12 +10,10 @@ import PaymentMethod from "./PaymentMethod";
 
 const Purchase = () => {
   const isMobile = MediaQuery();
-  const productDetailData = useBoundStore((state) => state.productDetailData);
+  const { productDetailData } = usePurchaseSlice();
   const [checked, setChecked] = useState({ name: "", value: false });
 
-  const isToastOpen = useBoundStore((state) => state.isToastOpen);
-  const alertText = useBoundStore((state) => state.alertText);
-  const bgColor = useBoundStore((state) => state.bgColor);
+  const { isToastOpen, alertText, bgColor } = useThemeSlice();
 
   const handleOnChange = (
     e:

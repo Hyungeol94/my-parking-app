@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ProductItem from "./ProductItem";
-import { useBoundStore } from "../../../../store";
+import { useAuthSlice } from "../../../../store";
 
 import classes from "./ProductList.module.css";
 import { IconButton } from "@mui/material";
@@ -21,7 +21,7 @@ type Props = {
 };
 const ProductList = ({ products, isMobile, isMyList }: Props) => {
   const navigate = useNavigate();
-  const user = useBoundStore((state) => state.userBasicInfo);
+  const { userBasicInfo: user } = useAuthSlice();
 
   const [selectValue, setSelectValue] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);

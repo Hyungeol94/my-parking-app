@@ -7,7 +7,7 @@ import {
 } from "react-kakao-maps-sdk";
 
 import CustomOverlayBox from "./CustomOverlayBox";
-import { useBoundStore } from "../../../store";
+import { useThemeSlice, useSearchSlice } from "../../../store";
 import { BASE_URL } from "../../../services/BaseUrl";
 import MediaQueryMain from "../../UI/MediaQueryMain";
 
@@ -40,9 +40,7 @@ const MainKakaoMap = ({
   handleFetchNowLocation,
 }: Props) => {
   const isMobile = MediaQueryMain();
-  const searchItemsInThisBound = useBoundStore(
-    (state) => state.searchItemsInThisBoundAndPeriod
-  );
+  const { searchItemsInThisBoundAndPeriod : searchItemsInThisBound } = useSearchSlice()
 
   const [mapExist, setMapExist] = useState<boolean>(false);
   const [markers, setMarkers] = useState<ProductListType | []>();
@@ -52,8 +50,7 @@ const MainKakaoMap = ({
   const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
   const [_, setIsBtnClick] = useState<boolean>(false);
 
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
-  const setAlertText = useBoundStore((state) => state.setAlertText);
+  const { setIsToastOpen, setAlertText } = useThemeSlice()
 
   useEffect(() => {
     // 해당하는 bounds영역에 맞는 범위의 상품리스트 요청
