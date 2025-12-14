@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   Map,
   MapMarker,
@@ -30,7 +30,6 @@ type Props = {
 };
 
 // Home에서 내려준 props검색시 사용된 주소 받기
-
 const MainKakaoMap = ({
   map,
   setMap,
@@ -40,25 +39,18 @@ const MainKakaoMap = ({
   handleFetchNowLocation,
 }: Props) => {
   const isMobile = MediaQueryMain();
-  const { searchItemsInThisBoundAndPeriod : searchItemsInThisBound } = useSearchSlice()
+  const { searchItemsInThisBoundAndPeriod: searchItemsInThisBound } = useSearchSlice();
 
   const [mapExist, setMapExist] = useState<boolean>(false);
   const [markers, setMarkers] = useState<ProductListType | []>();
-  const [isOverlayOpen, setIsOverlayOpen] = useState<boolean | undefined>(
-    false
-  );
+  const [isOverlayOpen, setIsOverlayOpen] = useState<boolean | undefined>(false);
   const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
   const [_, setIsBtnClick] = useState<boolean>(false);
 
-  const { setIsToastOpen, setAlertText } = useThemeSlice()
+  const { setIsToastOpen, setAlertText } = useThemeSlice();
 
-  useEffect(() => {
-    // 해당하는 bounds영역에 맞는 범위의 상품리스트 요청
-    searchProducts();
-  }, [mapExist, searchInfo]);
-
-  // 해당하는 주차장 쿼리 요청 함수
-  const searchProducts = async () => {
+  
+  const searchProducts = useCallback(async () => {
     if (!map) return;
 
     const bound = map.getBounds();
@@ -66,9 +58,21 @@ const MainKakaoMap = ({
 
     setMarkers(res); // 마커변경출력
     setProducts(res); // 리스트변경출력
-  };
+  }, [map, searchItemsInThisBound, searchInfo.period, setProducts]);
 
-  // 현위치 버튼 클릭시,
+  useEffect(() => {
+    if (mapExist) {
+      searchProducts();
+    }
+  }, [
+    mapExist,
+    searchProducts,
+    searchInfo.place_name,
+    searchInfo.centerLatLng?.lat, 
+    searchInfo.centerLatLng?.lng,
+  ]);
+
+  // 현위치 버튼 클릭시
   const handleToggleLocation = () => {
     setIsBtnClick(true);
     // 로딩중 토스트 ui설정
@@ -76,6 +80,16 @@ const MainKakaoMap = ({
     setAlertText("현재위치를 불러오고 있습니다. 잠시만 기다려주세요!");
     handleFetchNowLocation();
   };
+
+  // 지도 초기 중심좌표 메모이제이션
+  // 렌더링 시마다 객체가 새로 생성되어 지도가 깜빡이거나 중심을 다시 잡는 현상 방지
+  const initialCenter = useMemo(
+    () => ({
+      lat: 37.5070100333146,
+      lng: 127.055618149788,
+    }),
+    []
+  );
 
   return (
     <Box
@@ -88,12 +102,9 @@ const MainKakaoMap = ({
     >
       {/* 현재위치버튼을 클릭하지 않았을경우와 클릭했을경우 Map의 center좌표 다르게 */}
       <Map
-        center={{
-          lat: 37.5070100333146,
-          lng: 127.055618149788,
-        }} //초기 지도의 중심좌표값
+        center={initialCenter} // 수정된 부분: 메모이즈된 객체 사용
         style={{ height: "100vh" }}
-        level={4} //  초기 지도의 레벨 값
+        level={4} // 초기 지도의 레벨 값
         onCreate={(map) => {
           setMap(map); // 생성
           setMapExist(true);
@@ -138,9 +149,8 @@ const MainKakaoMap = ({
         {/* 상품들 데이터리스트를 맵핑해서 해당 위치값을 마커로 보여주기 */}
         {markers &&
           markers?.map((el, idx) => (
-            <>
+            <div key={idx}>
               <MapMarker
-                key={idx}
                 position={{
                   lat: Number(el?.extra?.lat),
                   lng: Number(el?.extra?.lng),
@@ -177,7 +187,7 @@ const MainKakaoMap = ({
                   />
                 </CustomOverlayMap>
               )}
-            </>
+            </div>
           ))}
 
         {/* 현재 위치 마커 */}
