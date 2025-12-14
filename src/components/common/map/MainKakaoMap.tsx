@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Map,
   MapMarker,
@@ -7,7 +7,7 @@ import {
 } from "react-kakao-maps-sdk";
 
 import CustomOverlayBox from "./CustomOverlayBox";
-import { useBoundStore } from "../../../store";
+import { useThemeSlice, useSearchSlice } from "../../../store";
 import { BASE_URL } from "../../../services/BaseUrl";
 import MediaQueryMain from "../../UI/MediaQueryMain";
 
@@ -19,7 +19,6 @@ import USER_MARKER from "../../../assets/images/user-marker2-image.png";
 import PARKING_MARKER from "../../../assets/images/parking-marker-image.png";
 import NOIMAGE from "../../../assets/images/car-image.png";
 
-// 홈페이지 메인 지도 서비스
 type Props = {
   map: kakao.maps.Map | undefined;
   setMap: (m: kakao.maps.Map | undefined) => void;
@@ -28,8 +27,6 @@ type Props = {
   nowLocation: LocationType;
   handleFetchNowLocation: () => void;
 };
-
-// Home에서 내려준 props검색시 사용된 주소 받기
 
 const MainKakaoMap = ({
   map,
@@ -40,41 +37,60 @@ const MainKakaoMap = ({
   handleFetchNowLocation,
 }: Props) => {
   const isMobile = MediaQueryMain();
-  const searchItemsInThisBound = useBoundStore(
-    (state) => state.searchItemsInThisBoundAndPeriod
-  );
+  
+  const { searchItemsInThisBoundAndPeriod: searchItemsInThisBound } = useSearchSlice();
 
   const [mapExist, setMapExist] = useState<boolean>(false);
   const [markers, setMarkers] = useState<ProductListType | []>();
-  const [isOverlayOpen, setIsOverlayOpen] = useState<boolean | undefined>(
-    false
-  );
+  const [isOverlayOpen, setIsOverlayOpen] = useState<boolean | undefined>(false);
   const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
   const [_, setIsBtnClick] = useState<boolean>(false);
 
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
-  const setAlertText = useBoundStore((state) => state.setAlertText);
+  const { setIsToastOpen, setAlertText } = useThemeSlice();
 
-  useEffect(() => {
-    // 해당하는 bounds영역에 맞는 범위의 상품리스트 요청
-    searchProducts();
-  }, [mapExist, searchInfo]);
-
-  // 해당하는 주차장 쿼리 요청 함수
-  const searchProducts = async () => {
+  // [안전장치 1] 함수 재생성 방지 (의존성에서 Slice 함수 제외)
+  const searchProducts = useCallback(async () => {
     if (!map) return;
 
     const bound = map.getBounds();
+    // searchInfo 객체 전체가 아니라 period만 사용
     const res = await searchItemsInThisBound(bound, searchInfo.period);
 
-    setMarkers(res); // 마커변경출력
-    setProducts(res); // 리스트변경출력
-  };
+    setMarkers(res); 
+    setProducts(res); 
+  }, [map, searchInfo.period, setProducts]); // searchItemsInThisBound 제거됨 (안전)
 
-  // 현위치 버튼 클릭시,
+  // [안전장치 2] useEffect 무한 루프 방지
+  // searchInfo 객체 자체가 아니라 내부 값(primitive)이 변할 때만 실행
+  useEffect(() => {
+    if (mapExist) {
+      searchProducts();
+    }
+  }, [
+    mapExist,
+    searchProducts,
+    searchInfo.place_name,       // 이름이 바뀌거나
+    searchInfo.centerLatLng?.lat, // 위도가 바뀌거나
+    searchInfo.centerLatLng?.lng  // 경도가 바뀔 때만 실행
+  ]);
+
+  // [안전장치 3] 지도 중심 좌표 메모이제이션
+  const initialCenter = useMemo(() => ({
+    lat: 37.5070100333146,
+    lng: 127.055618149788,
+  }), []);
+
+  // [안전장치 4] onCreate 핸들러 메모이제이션 및 방어 코드
+  const handleCreate = useCallback((mapInstance: kakao.maps.Map) => {
+    // 이미 map이 존재하면 setMap을 호출하지 않음 -> 루프 차단
+    if (!map) {
+      setMap(mapInstance);
+      setMapExist(true);
+    }
+  }, [map, setMap]);
+
   const handleToggleLocation = () => {
     setIsBtnClick(true);
-    // 로딩중 토스트 ui설정
     setIsToastOpen(true);
     setAlertText("현재위치를 불러오고 있습니다. 잠시만 기다려주세요!");
     handleFetchNowLocation();
@@ -89,28 +105,20 @@ const MainKakaoMap = ({
         height: isMobile ? "500px" : "auto",
       }}
     >
-      {/* 현재위치버튼을 클릭하지 않았을경우와 클릭했을경우 Map의 center좌표 다르게 */}
       <Map
-        center={{
-          lat: 37.5070100333146,
-          lng: 127.055618149788,
-        }} //초기 지도의 중심좌표값
+        center={initialCenter} // 메모이즈된 좌표 사용
         style={{ height: "100vh" }}
-        level={4} //  초기 지도의 레벨 값
-        onCreate={(map) => {
-          setMap(map); // 생성
-          setMapExist(true);
-        }}
+        level={4}
+        onCreate={handleCreate} // 메모이즈된 핸들러 사용
         onZoomChanged={() => {
           searchProducts();
         }}
         onDragEnd={() => {
           searchProducts();
-          setSelectedMarker(null); // 지도 움직일시 클릭한 오버레이 초기화
+          setSelectedMarker(null);
         }}
         maxLevel={7}
       >
-        {/* 검색한 위치 마커 보여주기 */}
         {searchInfo.place_name && (
           <MapMarker
             position={{
@@ -138,12 +146,10 @@ const MainKakaoMap = ({
           </MapMarker>
         )}
 
-        {/* 상품들 데이터리스트를 맵핑해서 해당 위치값을 마커로 보여주기 */}
         {markers &&
           markers?.map((el, idx) => (
-            <>
+            <div key={idx}>
               <MapMarker
-                key={idx}
                 position={{
                   lat: Number(el?.extra?.lat),
                   lng: Number(el?.extra?.lng),
@@ -180,10 +186,9 @@ const MainKakaoMap = ({
                   />
                 </CustomOverlayMap>
               )}
-            </>
+            </div>
           ))}
 
-        {/* 현재 위치 마커 */}
         {!nowLocation.isLoading && (
           <MapMarker
             position={{
@@ -194,7 +199,7 @@ const MainKakaoMap = ({
               src: USER_MARKER,
               size: { width: 60, height: 60 },
             }}
-          ></MapMarker>
+          />
         )}
         <ZoomControl />
       </Map>
