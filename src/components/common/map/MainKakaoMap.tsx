@@ -58,7 +58,7 @@ const MainKakaoMap = ({
 
     setMarkers(res); // 마커변경출력
     setProducts(res); // 리스트변경출력
-  }, [map, searchItemsInThisBound, searchInfo.period, setProducts]);
+  }, [map, searchInfo.period, setProducts]);
 
   useEffect(() => {
     if (mapExist) {
