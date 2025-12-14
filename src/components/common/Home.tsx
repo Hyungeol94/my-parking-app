@@ -12,11 +12,14 @@ import SearchInput from "../layouts/SearchInput";
 import SearchHeader from "../layouts/SearchHeader";
 import MediaQueryMain from "../UI/MediaQueryMain";
 import { useTheme } from "@mui/material";
-import { useThemeSlice } from "../../store";
+import { useBoundStore } from "../../store";
 import { Toast } from "../UI/Toast";
 
 const Home = () => {
-  const { isToastOpen, alertText, bgColor } = useThemeSlice()
+  const isToastOpen = useBoundStore((state) => state.isToastOpen);
+
+  const alertText = useBoundStore((state) => state.alertText);
+  const bgColor = useBoundStore((state) => state.bgColor);
 
   const isMobile = MediaQueryMain();
   const theme = useTheme();
