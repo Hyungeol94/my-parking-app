@@ -1,11 +1,10 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { FormControlLabel, Switch } from "@mui/material";
-import { useBoundStore } from "../../store";
+import { useThemeSlice } from "../../store";
 
 const Toggle: React.FC = () => {
-  const setIsDark = useBoundStore((state) => state.setIsDark);
-  const isDark = useBoundStore((state) => state.isDark);
+  const { isDark, setIsDark } = useThemeSlice()
 
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
