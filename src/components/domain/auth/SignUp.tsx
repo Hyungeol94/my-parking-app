@@ -5,14 +5,9 @@ import { useNavigate } from "react-router-dom";
 import SignUpForm from "./SignUpForm";
 
 const SignUp = () => {
-  const AuthSlice: AuthSlice = useAuthSlice();
-  const ThemeSlice: ThemeSlice = useThemeSlice();
-  const isToastOpen = ThemeSlice.isToastOpen
-  const setIsToastOpen= ThemeSlice.setIsToastOpen
-  const bgColor = ThemeSlice.bgColor
-  const setBgColor = ThemeSlice.setBgColor
-  const toastMessage = ThemeSlice.alertText
-  const setToastMessage = ThemeSlice.setAlertText
+  const { signUp, verifyEmail } = useAuthSlice();
+  const {isToastOpen, setIsToastOpen, bgColor, setBgColor, alertText: toastMessage, setAlertText: setToastMessage} = useThemeSlice()
+  
   const navigate = useNavigate();
   const [userInputs, setUserInputs] = useState<UserInputClass>(
     new UserInputClass()
@@ -41,7 +36,7 @@ const SignUp = () => {
     const newPerson: Partial<UserInputClass> = { ...userInputs };
     delete newPerson["passwordCheck"];
 
-    const AuthAlert = await AuthSlice.signUp(newPerson);
+    const AuthAlert = await signUp(newPerson);
     //newPerson을 넣어 회원가입을 진행합니다. 잘 완료되었다면 login 페이지로 이동합니다.
     if (AuthAlert["ok"] == true) {
       setIsToastOpen(true);
@@ -58,7 +53,7 @@ const SignUp = () => {
   const handleEmailVerification: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void = async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const AuthAlert = await AuthSlice.verifyEmail(userInputs.email);
+    const AuthAlert = await verifyEmail(userInputs.email);
     if (AuthAlert["ok"] == true) {
       setIsToastOpen(true);
       setToastMessage(AuthAlert["message"]);

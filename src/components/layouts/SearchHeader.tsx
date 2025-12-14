@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import { useBoundStore } from "../../store";
+import { useThemeSlice } from "../../store";
 import { ReactNode } from "react";
 import { useTheme } from "@mui/material";
 
@@ -8,8 +8,7 @@ interface SearchHeaderProps {
 }
 const SearchHeader: React.FC<SearchHeaderProps> = ({ children }) => {
   const theme = useTheme();
-
-  const isDark = useBoundStore((state) => state.isDark);
+  const { isDark } = useThemeSlice();
 
   return (
     <Box

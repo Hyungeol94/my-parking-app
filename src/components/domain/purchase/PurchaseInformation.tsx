@@ -1,10 +1,10 @@
 import { Box } from "@mui/system";
 import React from "react";
-import { useBoundStore } from "../../../store";
+import { useAuthSlice } from "../../../store";
 import classes from "./purchase.module.css";
 
 const PurchaseInformation: React.FC = () => {
-  const userBasicInfo = useBoundStore((state) => state.userBasicInfo);
+  const { userBasicInfo } = useAuthSlice();
 
   function maskSensitiveInfo(userInfo: {
     name: string;

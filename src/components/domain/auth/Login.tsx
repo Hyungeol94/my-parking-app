@@ -2,23 +2,16 @@
 import React, { ChangeEvent, useState } from "react";
 import LoginForm from "./LoginForm";
 import { useNavigate } from "react-router-dom";
-import { useBoundStore } from "../../../store/index";
+import { useAuthSlice, useThemeSlice } from "../../../store/index";
 
 const Login = () => {
   const navigate = useNavigate();
   const [userInputId, setUserInputId] = useState("");
   const [userInputPassword, setUserInputPassword] = useState("");
-  const login = useBoundStore((state) => state.login);
-  const updateUserBasicInfo = useBoundStore(
-    (state) => state.updateUserBasicInfo
-  );
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
-  const setAlertText = useBoundStore((state) => state.setAlertText);
-  const setBgColor = useBoundStore((state) => state.setBgColor);
-  const isToastOpen = useBoundStore((state) => state.isToastOpen);
-  const alertText = useBoundStore((state) => state.alertText);
-  const bgColor = useBoundStore((state) => state.bgColor);
-
+  
+  const {updateUserBasicInfo, login} = useAuthSlice()
+  const { isToastOpen, setIsToastOpen, alertText, setAlertText, bgColor, setBgColor } = useThemeSlice()
+  
   // input의 id name에 따라 값이 담김
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.id === "user-email") {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import useCustomAxios from "../../../../services/useCustomAxios";
-import { useBoundStore } from "../../../../store";
+import { useAuthSlice, useThemeSlice } from "../../../../store";
 
 import ProductForm from "../regist/ProductForm";
 import Loading from "../../../common/Loading";
@@ -11,10 +11,8 @@ const ProductEdit = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
   const axiosInstance = useCustomAxios();
-
-  const setAlertText = useBoundStore((state) => state.setAlertText);
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
-  const userBasicInfo = useBoundStore((state) => state.userBasicInfo);
+  const { setAlertText, setIsToastOpen } = useThemeSlice();
+  const { userBasicInfo } = useAuthSlice();
 
   const [loading, setLoading] = useState(true);
   const [initialProduct, setInitialProduct] = useState<ProductItemType>({

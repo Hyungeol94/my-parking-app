@@ -6,7 +6,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import Box from "@mui/material/Box";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useBoundStore } from "../../store";
+import { useAuthSlice, useMyPageSlice, useThemeSlice } from "../../store";
 import { useTheme } from "@mui/material/styles";
 import { Toast } from "../UI/Toast";
 
@@ -16,20 +16,11 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({ position, width }) => {
-  const logout = useBoundStore((state) => state.logout);
-  const isLoggedIn = useBoundStore((state) => state.isLoggedIn);
-
-  const user_id = useBoundStore((state) => state.myInfo._id);
-  const setNavSelected = useBoundStore((state) => state.setNavSelected);
-  const navSelectedValue = useBoundStore((state) => state.navSelectedValue);
-
-  const isToastOpen = useBoundStore((state) => state.isToastOpen);
-  const alertText = useBoundStore((state) => state.alertText);
-  // const bgColor = useBoundStore((state) => state.bgColor);
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
-  const setAlertText = useBoundStore((state) => state.setAlertText);
-  // const setBgColor = useBoundStore((state) => state.setBgColor);
-
+  const { logout, isLoggedIn } = useAuthSlice()
+  const { myInfo: { _id: user_id } } = useMyPageSlice();
+  const { setNavSelected, navSelectedValue, isToastOpen, alertText, setIsToastOpen, setAlertText } = useThemeSlice()
+  
+  
   const navigate = useNavigate();
   const location = useLocation().pathname;
   const pathName = location.split("/")[1];
