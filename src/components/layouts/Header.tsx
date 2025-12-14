@@ -4,14 +4,13 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import Box from "@mui/material/Box";
 
-import { useBoundStore } from "../../store";
+import { useThemeSlice } from "../../store";
 import { useNavigate } from "react-router-dom";
 import Toggle from "./Toggle";
 import classes from "./Header.module.css";
 
 const Header = () => {
-  const isDark = useBoundStore((state) => state.isDark);
-  // const setIsDark = useBoundStore((state) => state.setIsDark);
+  const { isDark } = useThemeSlice();
   const navigate = useNavigate();
   // const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 

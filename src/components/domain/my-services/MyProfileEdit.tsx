@@ -1,15 +1,16 @@
 import {useRef, useEffect, useState, createRef} from "react";
-import { useBoundStore } from "../../../store";
-import { useNavigate} from "react-router-dom";
-import {UserDetailInfo, UserExtraInfo} from "../../../types/classImplementations"
+import { useMyPageSlice, useAuthSlice, useThemeSlice, useImageSlice } from "../../../store";
+import { useNavigate } from "react-router-dom";
+import { UserDetailInfo, UserExtraInfo } from "../../../types/classImplementations"
 import React from "react";
 import MyProfileEditForm from "./MyProfileEditForm";
 
 
 const MyProfileEdit = () => {
-  const Store = useBoundStore((state) => state)
-  const myInfo: UserDetailInfoType = Store.myInfo
-  const id: number = Store.userBasicInfo._id
+  const { myInfo, getMyInfo, setMyInfo, updateMyInfo } = useMyPageSlice()
+  const { userBasicInfo } = useAuthSlice()
+  const { _id : id } = userBasicInfo || {}
+  const { uploadImage } = useImageSlice()
   const navigate = useNavigate()
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const imageUploadRef = useRef<HTMLInputElement>(null);
@@ -17,17 +18,12 @@ const MyProfileEdit = () => {
   const [userInputRef, setUserInputRef] = useState<{ [key in keyof UserBasicInfoType]: React.MutableRefObject<HTMLInputElement|null> }>({} as { [key in keyof UserBasicInfoType]: React.MutableRefObject<HTMLInputElement|null> })
   const [userExtraInputRef, setUserExtraInputRef] = useState<{ [key in keyof Required<ExtraType>]: React.MutableRefObject<HTMLInputElement|null> }>({} as { [key in keyof Required<ExtraType>]: React.MutableRefObject<HTMLInputElement|null> })
   const [isLoading, setIsLoading] = useState(false);
-  const isToastOpen= useBoundStore(state=>state.isToastOpen)
-  const setIsToastOpen = useBoundStore(state=>state.setIsToastOpen)
-  const toastMessage = useBoundStore(state=>state.alertText)
-  const setToastMessage = useBoundStore(state=>state.setAlertText)
-  const setBgColor = useBoundStore(state=>state.setBgColor)
-  const bgColor = useBoundStore(state=>state.bgColor)
+  const { isToastOpen, setIsToastOpen, alertText: toastMessage, setAlertText: setToastMessage, bgColor, setBgColor } = useThemeSlice()
 
   const fetchAndSetMyInfo = async () => {
     setIsLoading(true)
-    const myInfo = await Store.getMyInfo(id);
-    Store.setMyInfo(myInfo)
+    const myInfo = await getMyInfo(id);
+    setMyInfo(myInfo)
 
     const userExtraInfo: ExtraType = {...new UserExtraInfo(), ...myInfo.extra}
     const currentInfo: Partial<UserDetailInfo> = {...myInfo}
@@ -80,10 +76,9 @@ const MyProfileEdit = () => {
     setBgColor("var(--toast-success)") 
     closeModal()
     
-    const uploadImage = Store.uploadImage
     const profileImageURL = await uploadImage(imageUploadRef)
-    const updatedInfo = await Store.updateMyInfo(id, {extra: {...myInfo.extra, profileImage: profileImageURL[0]}})
-    Store.setMyInfo({...myInfo, ...updatedInfo})
+    const updatedInfo = await updateMyInfo(id, {extra: {...myInfo.extra, profileImage: profileImageURL[0]}})
+    setMyInfo({...myInfo, ...updatedInfo})
     
     setIsLoading(false)
     if (profileImageURL.length !== 0) {
@@ -128,7 +123,7 @@ const MyProfileEdit = () => {
     //editedInfo에 담아서 patch하기
     const editedInfo = {...myBasicInfo, extra: {...myExtraInfo}}
     console.log('editedInto:', editedInfo)
-    if (await Store.updateMyInfo(id, editedInfo)){
+    if (await updateMyInfo(id, editedInfo)){
       setIsToastOpen(true)
       setToastMessage("프로필 수정이 완료되었습니다.")
       setBgColor("var(--toast-success)");

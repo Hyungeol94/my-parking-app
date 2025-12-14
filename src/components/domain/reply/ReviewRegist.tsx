@@ -4,7 +4,7 @@ import ReviewRegistForm from "./ReviewRegistForm";
 import { useNavigate, useParams } from "react-router-dom";
 import classes from "./ReviewRegist.module.css";
 import { Toast } from "../../UI/Toast";
-import { useBoundStore } from "../../../store";
+import { useThemeSlice } from "../../../store";
 
 const ReviewRegist: React.FC = () => {
   const navigate = useNavigate();
@@ -16,12 +16,7 @@ const ReviewRegist: React.FC = () => {
   // 평점 1~5 까지의 값
   const [rating, setRating] = useState<number>(0);
 
-  const isToastOpen = useBoundStore((state) => state.isToastOpen);
-  const alertText = useBoundStore((state) => state.alertText);
-  const bgColor = useBoundStore((state) => state.bgColor);
-  const setIsToastOpen = useBoundStore((state) => state.setIsToastOpen);
-  const setAlertText = useBoundStore((state) => state.setAlertText);
-  const setBgColor = useBoundStore((state) => state.setBgColor);
+  const { isToastOpen, setIsToastOpen, alertText, setAlertText, bgColor, setBgColor } = useThemeSlice();
 
   useEffect(() => {
     //product id를 받아 상품 상세 조회 data 가져오기

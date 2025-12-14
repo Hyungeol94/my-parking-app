@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { useBoundStore } from "../../store";
+import { useThemeSlice } from "../../store";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline, createTheme } from "@mui/material";
 
@@ -8,7 +8,7 @@ interface ThemeProps {
 }
 
 const Theme: React.FC<ThemeProps> = ({ children }) => {
-  const isDark = useBoundStore((state) => state.isDark);
+  const { isDark } = useThemeSlice();
 
   const darkTheme = createTheme({
     breakpoints: {

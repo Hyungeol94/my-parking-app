@@ -1,7 +1,7 @@
 import { List, ListItem, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import { useBoundStore } from "../../../../store";
+import { useThemeSlice } from "../../../../store";
 import MediaQuery from "../../../UI/MediaQuery";
 
 interface OrderTitleBoxProps {
@@ -23,8 +23,8 @@ const OrderTitleBox: React.FC<OrderTitleBoxProps> = ({
 }) => {
   const isMobile = MediaQuery();
 
-  const isDark = useBoundStore((state) => state.isDark);
-  console.log(isDark);
+  const { isDark } = useThemeSlice();
+  
   return (
     <>
       {isMobile || (
