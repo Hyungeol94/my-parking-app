@@ -1,4 +1,5 @@
 import React, { FormEvent, SyntheticEvent, useEffect, useState } from "react";
+import { useShallow } from 'zustand/react/shallow';
 import useCustomAxios from "../../../services/useCustomAxios";
 import ReviewRegistForm from "./ReviewRegistForm";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,7 +17,16 @@ const ReviewRegist: React.FC = () => {
   // 평점 1~5 까지의 값
   const [rating, setRating] = useState<number>(0);
 
-  const { isToastOpen, setIsToastOpen, alertText, setAlertText, bgColor, setBgColor } = useThemeSlice();
+  const { isToastOpen, setIsToastOpen, alertText, setAlertText, bgColor, setBgColor } = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      setIsToastOpen: state.setIsToastOpen, 
+      alertText: state.alertText, 
+      setAlertText: state.setAlertText, 
+      bgColor: state.bgColor, 
+      setBgColor: state.setBgColor 
+    }))
+  );
 
   useEffect(() => {
     //product id를 받아 상품 상세 조회 data 가져오기

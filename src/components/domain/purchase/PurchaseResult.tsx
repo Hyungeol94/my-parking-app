@@ -4,12 +4,19 @@ import { CommonButtonMiddle } from "../../UI/CommonButton";
 import { useNavigate } from "react-router-dom";
 import classes from "./PurchaseResult.module.css";
 import { useEffect } from "react";
+import { useShallow } from 'zustand/react/shallow';
 import { Toast } from "../../UI/Toast";
 import { useThemeSlice } from "../../../store";
 
 const PurchaseResult = () => {
   const navigate = useNavigate();
-  const { isToastOpen, alertText, bgColor } = useThemeSlice()
+  const { isToastOpen, alertText, bgColor } = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      alertText: state.alertText, 
+      bgColor: state.bgColor 
+    }))
+  )
   
   useEffect(() => {
     const handleBeforeUnload = () => {

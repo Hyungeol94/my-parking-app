@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useShallow } from 'zustand/react/shallow';
 
 import useCustomAxios from "../../../../services/useCustomAxios";
 import { useAuthSlice, useThemeSlice } from "../../../../store";
@@ -11,7 +12,12 @@ const ProductEdit = () => {
   const navigate = useNavigate();
   const { productId } = useParams();
   const axiosInstance = useCustomAxios();
-  const { setAlertText, setIsToastOpen } = useThemeSlice();
+  const { setAlertText, setIsToastOpen } = useThemeSlice(
+    useShallow((state) => ({ 
+      setAlertText: state.setAlertText, 
+      setIsToastOpen: state.setIsToastOpen 
+    }))
+  );
   const { userBasicInfo } = useAuthSlice();
 
   const [loading, setLoading] = useState(true);

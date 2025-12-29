@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useShallow } from 'zustand/react/shallow';
 import PurchaseForm from "./PurchaseForm";
 import OrderCard from "../order-history/ordercard/OrderCard";
 import { usePurchaseSlice, useThemeSlice } from "../../../store";
@@ -13,7 +14,13 @@ const Purchase = () => {
   const { productDetailData } = usePurchaseSlice();
   const [checked, setChecked] = useState({ name: "", value: false });
 
-  const { isToastOpen, alertText, bgColor } = useThemeSlice();
+  const { isToastOpen, alertText, bgColor } = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      alertText: state.alertText, 
+      bgColor: state.bgColor 
+    }))
+  );
 
   const handleOnChange = (
     e:

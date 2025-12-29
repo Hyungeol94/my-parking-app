@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useShallow } from 'zustand/react/shallow';
 
 import MainImagesComponent from "./MainImagesComponent";
 import SellerInfoComponent from "./SellerInfoComponent";
@@ -17,7 +18,14 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const axiosInstance = useCustomAxios();
 
-  const { isToastOpen, alertText, setAlertText, setIsToastOpen }  = useThemeSlice();
+  const { isToastOpen, alertText, setAlertText, setIsToastOpen }  = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      alertText: state.alertText, 
+      setAlertText: state.setAlertText, 
+      setIsToastOpen: state.setIsToastOpen 
+    }))
+  );
 
   const [loading, setLoading] = useState(true);
   const [productData, setProductData] = useState<ProductItemType>({

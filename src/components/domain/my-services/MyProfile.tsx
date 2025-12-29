@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useShallow } from 'zustand/react/shallow';
 import { useMyPageSlice, useAuthSlice, useThemeSlice } from "../../../store";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -11,32 +12,45 @@ import Loading from "../../common/Loading";
 
 const MyProfile = () => {
   const theme = useTheme();
-  const authSlice: AuthSlice = useAuthSlice()
-  const myPageSlice: MyPageSlice = useMyPageSlice()
-  const themeSlice: ThemeSlice = useThemeSlice()
-  const myInfo = myPageSlice.myInfo
-  const id = authSlice.userBasicInfo._id
+  const { userBasicInfo, isLoggedIn } = useAuthSlice(
+    useShallow((state) => ({ 
+      userBasicInfo: state.userBasicInfo, 
+      isLoggedIn: state.isLoggedIn 
+    }))
+  )
+  const { myInfo, getMyInfo, setMyInfo } = useMyPageSlice(
+    useShallow((state) => ({ 
+      myInfo: state.myInfo, 
+      getMyInfo: state.getMyInfo, 
+      setMyInfo: state.setMyInfo 
+    }))
+  )
+  const { isToastOpen, alertText: toastMessage, bgColor } = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      alertText: state.alertText, 
+      bgColor: state.bgColor 
+    }))
+  )
+  const id = userBasicInfo._id
   const navigate = useNavigate();
   const fetchAndSetMyInfo = async () => {
     setLoading(true);
-    myPageSlice.setMyInfo(await myPageSlice.getMyInfo(id));
+    setMyInfo(await getMyInfo(id));
     setLoading(false);
   };
   const fontSize = "1.2rem";
-  const isToastOpen = themeSlice.isToastOpen
-  const toastMessage = themeSlice.alertText
-  const bgColor = themeSlice.bgColor
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    authSlice.isLoggedIn
+    isLoggedIn
       ? fetchAndSetMyInfo()
       : (() => {
           alert("로그인이 필요합니다"), navigate("/login");
         })();
   }, []);
 
-  return ( loading? (<Loading/>) : !authSlice.isLoggedIn ? (
+  return ( loading? (<Loading/>) : !isLoggedIn ? (
     <>로그인을 해주세요</>
   ) : (
     <>

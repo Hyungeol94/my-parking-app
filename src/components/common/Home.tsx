@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useState, useRef } from "react";
+import { useShallow } from 'zustand/react/shallow';
 
 import ProductList from "../domain/product/list/ProductList";
 import MainKakaoMap from "./map/MainKakaoMap";
@@ -16,7 +17,13 @@ import { useThemeSlice } from "../../store";
 import { Toast } from "../UI/Toast";
 
 const Home = () => {
-  const { isToastOpen, alertText, bgColor } = useThemeSlice();
+  const { isToastOpen, alertText, bgColor } = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      alertText: state.alertText, 
+      bgColor: state.bgColor 
+    }))
+  );
 
   const isMobile = MediaQueryMain();
   const theme = useTheme();

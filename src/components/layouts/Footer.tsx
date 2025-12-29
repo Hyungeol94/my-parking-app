@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useShallow } from 'zustand/react/shallow';
 
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
@@ -16,9 +17,23 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({ position, width }) => {
-  const { logout, isLoggedIn } = useAuthSlice()
+  const { logout, isLoggedIn } = useAuthSlice(
+    useShallow((state) => ({ 
+      logout: state.logout, 
+      isLoggedIn: state.isLoggedIn 
+    }))
+  )
   const { myInfo: { _id: user_id } } = useMyPageSlice();
-  const { setNavSelected, navSelectedValue, isToastOpen, alertText, setIsToastOpen, setAlertText } = useThemeSlice()
+  const { setNavSelected, navSelectedValue, isToastOpen, alertText, setIsToastOpen, setAlertText } = useThemeSlice(
+    useShallow((state) => ({ 
+      setNavSelected: state.setNavSelected, 
+      navSelectedValue: state.navSelectedValue, 
+      isToastOpen: state.isToastOpen, 
+      alertText: state.alertText, 
+      setIsToastOpen: state.setIsToastOpen, 
+      setAlertText: state.setAlertText 
+    }))
+  )
   
   
   const navigate = useNavigate();
