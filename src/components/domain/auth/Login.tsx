@@ -1,5 +1,6 @@
 // 컴포넌트 안에 비즈니스로직이고 반환(return)은 해당 로직에서 사용한 변수나 함수를 전달할 UI컴포넌트 렌더링
 import React, { ChangeEvent, useState } from "react";
+import { useShallow } from 'zustand/react/shallow';
 import LoginForm from "./LoginForm";
 import { useNavigate } from "react-router-dom";
 import { useAuthSlice, useThemeSlice } from "../../../store/index";
@@ -9,8 +10,22 @@ const Login = () => {
   const [userInputId, setUserInputId] = useState("");
   const [userInputPassword, setUserInputPassword] = useState("");
   
-  const {updateUserBasicInfo, login} = useAuthSlice()
-  const { isToastOpen, setIsToastOpen, alertText, setAlertText, bgColor, setBgColor } = useThemeSlice()
+  const {updateUserBasicInfo, login} = useAuthSlice(
+    useShallow((state) => ({ 
+      updateUserBasicInfo: state.updateUserBasicInfo, 
+      login: state.login 
+    }))
+  )
+  const { isToastOpen, setIsToastOpen, alertText, setAlertText, bgColor, setBgColor } = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      setIsToastOpen: state.setIsToastOpen, 
+      alertText: state.alertText, 
+      setAlertText: state.setAlertText, 
+      bgColor: state.bgColor, 
+      setBgColor: state.setBgColor 
+    }))
+  )
   
   // input의 id name에 따라 값이 담김
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

@@ -1,12 +1,27 @@
 import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { useShallow } from 'zustand/react/shallow';
 import { UserInputClass } from "../../../types/classImplementations";
 import { useAuthSlice, useThemeSlice } from "../../../store/index";
 import { useNavigate } from "react-router-dom";
 import SignUpForm from "./SignUpForm";
 
 const SignUp = () => {
-  const { signUp, verifyEmail } = useAuthSlice();
-  const {isToastOpen, setIsToastOpen, bgColor, setBgColor, alertText: toastMessage, setAlertText: setToastMessage} = useThemeSlice()
+  const { signUp, verifyEmail } = useAuthSlice(
+    useShallow((state) => ({ 
+      signUp: state.signUp, 
+      verifyEmail: state.verifyEmail 
+    }))
+  );
+  const {isToastOpen, setIsToastOpen, bgColor, setBgColor, alertText: toastMessage, setAlertText: setToastMessage} = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      setIsToastOpen: state.setIsToastOpen, 
+      bgColor: state.bgColor, 
+      setBgColor: state.setBgColor, 
+      alertText: state.alertText, 
+      setAlertText: state.setAlertText 
+    }))
+  )
   
   const navigate = useNavigate();
   const [userInputs, setUserInputs] = useState<UserInputClass>(

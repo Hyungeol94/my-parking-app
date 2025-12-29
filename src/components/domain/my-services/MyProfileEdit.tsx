@@ -1,4 +1,5 @@
 import {useRef, useEffect, useState, createRef} from "react";
+import { useShallow } from 'zustand/react/shallow';
 import { useMyPageSlice, useAuthSlice, useThemeSlice, useImageSlice } from "../../../store";
 import { useNavigate } from "react-router-dom";
 import { UserDetailInfo, UserExtraInfo } from "../../../types/classImplementations"
@@ -7,7 +8,14 @@ import MyProfileEditForm from "./MyProfileEditForm";
 
 
 const MyProfileEdit = () => {
-  const { myInfo, getMyInfo, setMyInfo, updateMyInfo } = useMyPageSlice()
+  const { myInfo, getMyInfo, setMyInfo, updateMyInfo } = useMyPageSlice(
+    useShallow((state) => ({ 
+      myInfo: state.myInfo, 
+      getMyInfo: state.getMyInfo, 
+      setMyInfo: state.setMyInfo, 
+      updateMyInfo: state.updateMyInfo 
+    }))
+  )
   const { userBasicInfo } = useAuthSlice()
   const { _id : id } = userBasicInfo || {}
   const { uploadImage } = useImageSlice()
@@ -18,7 +26,16 @@ const MyProfileEdit = () => {
   const [userInputRef, setUserInputRef] = useState<{ [key in keyof UserBasicInfoType]: React.MutableRefObject<HTMLInputElement|null> }>({} as { [key in keyof UserBasicInfoType]: React.MutableRefObject<HTMLInputElement|null> })
   const [userExtraInputRef, setUserExtraInputRef] = useState<{ [key in keyof Required<ExtraType>]: React.MutableRefObject<HTMLInputElement|null> }>({} as { [key in keyof Required<ExtraType>]: React.MutableRefObject<HTMLInputElement|null> })
   const [isLoading, setIsLoading] = useState(false);
-  const { isToastOpen, setIsToastOpen, alertText: toastMessage, setAlertText: setToastMessage, bgColor, setBgColor } = useThemeSlice()
+  const { isToastOpen, setIsToastOpen, alertText: toastMessage, setAlertText: setToastMessage, bgColor, setBgColor } = useThemeSlice(
+    useShallow((state) => ({ 
+      isToastOpen: state.isToastOpen, 
+      setIsToastOpen: state.setIsToastOpen, 
+      alertText: state.alertText, 
+      setAlertText: state.setAlertText, 
+      bgColor: state.bgColor, 
+      setBgColor: state.setBgColor 
+    }))
+  )
 
   const fetchAndSetMyInfo = async () => {
     setIsLoading(true)

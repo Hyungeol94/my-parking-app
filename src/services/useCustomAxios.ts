@@ -1,5 +1,6 @@
 import axios from "axios";
 import mem from "mem";
+import { useShallow } from 'zustand/react/shallow';
 import { BASE_URL } from "./BaseUrl";
 import { useAuthSlice } from "../store";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,14 @@ import { useNavigate } from "react-router-dom";
 const REFRESH_URL = "/users/refresh"; // 리프래쉬 토큰을 서버에 보내는 주소 -> 서버에서 새로운 엑세스 토큰 보내줌
 
 const useCustomAxios = () => {
-const { userBasicInfo: user, userToken, logout, updateUserBasicInfo: setUser } = useAuthSlice();
+const { userBasicInfo: user, userToken, logout, updateUserBasicInfo: setUser } = useAuthSlice(
+  useShallow((state) => ({ 
+    userBasicInfo: state.userBasicInfo, 
+    userToken: state.userToken, 
+    logout: state.logout, 
+    updateUserBasicInfo: state.updateUserBasicInfo 
+  }))
+);
 const { accessToken: userAccToken, refreshToken: userRefToken } = userToken || {};
 
   const navigate = useNavigate();

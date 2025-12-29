@@ -5,6 +5,7 @@ import {
   ZoomControl,
   CustomOverlayMap,
 } from "react-kakao-maps-sdk";
+import { useShallow } from 'zustand/react/shallow';
 
 import CustomOverlayBox from "./CustomOverlayBox";
 import { useThemeSlice, useSearchSlice } from "../../../store";
@@ -46,7 +47,12 @@ const MainKakaoMap = ({
   const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
   const [_, setIsBtnClick] = useState<boolean>(false);
 
-  const { setIsToastOpen, setAlertText } = useThemeSlice();
+  const { setIsToastOpen, setAlertText } = useThemeSlice(
+    useShallow((state) => ({ 
+      setIsToastOpen: state.setIsToastOpen, 
+      setAlertText: state.setAlertText 
+    }))
+  );
 
   // [안전장치 1] 함수 재생성 방지 (의존성에서 Slice 함수 제외)
   const searchProducts = useCallback(async () => {
