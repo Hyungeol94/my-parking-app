@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useShallow } from 'zustand/react/shallow';
 import { CommonButtonSmall } from "../../UI/CommonButton";
 import { useAuthSlice, usePurchaseSlice, useThemeSlice } from "../../../store";
 import useCustomAxios from "../../../services/useCustomAxios";
@@ -25,7 +26,13 @@ const PaymentMethod = ({ disabled, paymentOption }: PaymentMethodProps) => {
   const axiosInstance = useCustomAxios();
   const { userBasicInfo } =  useAuthSlice();
   const { productDetailData } = usePurchaseSlice();
-  const { setIsToastOpen, setAlertText, setBgColor } = useThemeSlice();
+  const { setIsToastOpen, setAlertText, setBgColor } = useThemeSlice(
+    useShallow((state) => ({ 
+      setIsToastOpen: state.setIsToastOpen, 
+      setAlertText: state.setAlertText, 
+      setBgColor: state.setBgColor 
+    }))
+  );
   
   console.log(productDetailData);
 

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useShallow } from 'zustand/react/shallow';
 
 import ProductForm from "./ProductForm";
 import useCustomAxios from "../../../../services/useCustomAxios";
@@ -7,7 +8,12 @@ import { useAuthSlice, useThemeSlice } from "../../../../store/index";
 const ProductRegist = () => {
   const navigate = useNavigate();
   const axiosInstance = useCustomAxios();
-  const { setAlertText, setIsToastOpen } = useThemeSlice();
+  const { setAlertText, setIsToastOpen } = useThemeSlice(
+    useShallow((state) => ({ 
+      setAlertText: state.setAlertText, 
+      setIsToastOpen: state.setIsToastOpen 
+    }))
+  );
 
   //로그인 한 user의 name
   const { userBasicInfo } = useAuthSlice();

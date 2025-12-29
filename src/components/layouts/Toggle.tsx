@@ -1,10 +1,16 @@
 import React from "react";
+import { useShallow } from 'zustand/react/shallow';
 import { styled } from "@mui/material/styles";
 import { FormControlLabel, Switch } from "@mui/material";
 import { useThemeSlice } from "../../store";
 
 const Toggle: React.FC = () => {
-  const { isDark, setIsDark } = useThemeSlice()
+  const { isDark, setIsDark } = useThemeSlice(
+    useShallow((state) => ({ 
+      isDark: state.isDark, 
+      setIsDark: state.setIsDark 
+    }))
+  )
 
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
