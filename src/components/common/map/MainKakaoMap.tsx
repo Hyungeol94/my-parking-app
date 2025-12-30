@@ -27,6 +27,7 @@ type Props = {
   searchInfo: MapInfoType;
   nowLocation: LocationType;
   handleFetchNowLocation: () => void;
+  setIsLoading: (loading: boolean) => void;
 };
 
 const MainKakaoMap = ({
@@ -36,6 +37,7 @@ const MainKakaoMap = ({
   searchInfo,
   nowLocation,
   handleFetchNowLocation,
+  setIsLoading,
 }: Props) => {
   const isMobile = MediaQueryMain();
   
@@ -58,13 +60,15 @@ const MainKakaoMap = ({
   const searchProducts = useCallback(async () => {
     if (!map) return;
 
+    setIsLoading(true);
     const bound = map.getBounds();
     // searchInfo 객체 전체가 아니라 period만 사용
     const res = await searchItemsInThisBound(bound, searchInfo.period);
 
     setMarkers(res); 
     setProducts(res); 
-  }, [map, searchInfo.period, setProducts]); // searchItemsInThisBound 제거됨 (안전)
+    setIsLoading(false);
+  }, [map, searchInfo.period, setProducts, setIsLoading]); // searchItemsInThisBound 제거됨 (안전)
 
   // [안전장치 2] useEffect 무한 루프 방지
   // searchInfo 객체 자체가 아니라 내부 값(primitive)이 변할 때만 실행

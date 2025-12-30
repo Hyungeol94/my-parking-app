@@ -18,8 +18,9 @@ type Props = {
   products: ProductListType | undefined;
   isMobile: boolean;
   isMyList?: boolean;
+  isLoading?: boolean;
 };
-const ProductList = ({ products, isMobile, isMyList }: Props) => {
+const ProductList = ({ products, isMobile, isMyList, isLoading }: Props) => {
   const navigate = useNavigate();
   const { userBasicInfo: user } = useAuthSlice();
 
@@ -149,7 +150,9 @@ const ProductList = ({ products, isMobile, isMyList }: Props) => {
           </div>
 
           <ul className={classes["product-list"]}>
-            {filteredProducts && filteredProducts.length > 0 ? (
+            {isLoading ? (
+              <p>상품을 검색하는 중이에요🔍</p>
+            ) : filteredProducts && filteredProducts.length > 0 ? (
               filteredProducts.map((product) => {
                 return <ProductItem key={product._id} product={product} />;
               })
@@ -203,7 +206,9 @@ const ProductList = ({ products, isMobile, isMyList }: Props) => {
             </Box>
           </div>
           <ul className={classes["product-list"]}>
-            {filteredProducts && filteredProducts.length > 0 ? (
+            {isLoading ? (
+              <p>상품을 검색하는 중이에요🔍</p>
+            ) : filteredProducts && filteredProducts.length > 0 ? (
               filteredProducts.map((product) => {
                 return <ProductItem key={product._id} product={product} />;
               })
