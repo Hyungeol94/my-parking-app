@@ -56,19 +56,42 @@ const MainKakaoMap = ({
     }))
   );
 
+  // bound 내부의 제품만 필터링하는 함수
+  const filterProductsInBound = useCallback((products: ProductListType, bound: kakao.maps.LatLngBounds) => {
+    return products.filter(product => {
+      const lat = Number(product.extra?.lat);
+      const lng = Number(product.extra?.lng);
+      if (!lat || !lng) return false;
+      
+      const position = new kakao.maps.LatLng(lat, lng);
+      return bound.contain(position);
+    });
+  }, []);
+
   // [안전장치 1] 함수 재생성 방지 (의존성에서 Slice 함수 제외)
   const searchProducts = useCallback(async () => {
     if (!map) return;
 
-    setIsLoading(true);
-    const bound = map.getBounds();
-    // searchInfo 객체 전체가 아니라 period만 사용
-    const res = await searchItemsInThisBound(bound, searchInfo.period);
+    try {
+      setIsLoading(true);
+      const bound = map.getBounds();
+      // searchInfo 객체 전체가 아니라 period만 사용
+      const res = await searchItemsInThisBound(bound, searchInfo.period);
 
-    setMarkers(res); 
-    setProducts(res); 
-    setIsLoading(false);
-  }, [map, searchInfo.period, setProducts, setIsLoading]); // searchItemsInThisBound 제거됨 (안전)
+      // 마커는 서버에서 받은 전체 데이터 사용
+      setMarkers(res); 
+      
+      // ProductList에는 현재 bound 내부의 제품만 전달
+      const filteredProducts = filterProductsInBound(res, bound);
+      setProducts(filteredProducts); 
+    } catch (error) {
+      console.error('상품 검색 중 에러 발생:', error);
+      setMarkers([]);
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [map, searchInfo.period, setProducts, setIsLoading, filterProductsInBound]); // searchItemsInThisBound 제거됨 (안전)
 
   // [안전장치 2] useEffect 무한 루프 방지
   // searchInfo 객체 자체가 아니라 내부 값(primitive)이 변할 때만 실행
