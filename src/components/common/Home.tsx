@@ -31,6 +31,7 @@ const Home = () => {
 
   const [map, setMap] = useState<kakao.maps.Map>();
   const [products, setProducts] = useState<ProductListType | []>([]); // 서버 요청 받는 상품들 데이터(초기, 검색후)
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 상품 검색 로딩 상태
   const [nowLocation, setNowLocation] = useState<LocationType>({
     centerLatLng: {
       lat: undefined,
@@ -202,6 +203,7 @@ const Home = () => {
           searchInfo={searchInfo}
           nowLocation={nowLocation}
           handleFetchNowLocation={handleFetchNowLocation}
+          setIsLoading={setIsLoading}
         />
       </Box>
 
@@ -212,7 +214,7 @@ const Home = () => {
           backgroundColor: theme.palette.background.default,
         }}
       >
-        <ProductList products={products} isMobile={isMobile} />
+        <ProductList products={products} isMobile={isMobile} isLoading={isLoading} />
       </Box>
 
       {isMobile && <Footer />}
