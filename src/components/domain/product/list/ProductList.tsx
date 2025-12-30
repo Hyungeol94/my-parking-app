@@ -18,8 +18,9 @@ type Props = {
   products: ProductListType | undefined;
   isMobile: boolean;
   isMyList?: boolean;
+  isLoading?: boolean;
 };
-const ProductList = ({ products, isMobile, isMyList }: Props) => {
+const ProductList = ({ products, isMobile, isMyList, isLoading }: Props) => {
   const navigate = useNavigate();
   const { userBasicInfo: user } = useAuthSlice();
 
@@ -148,14 +149,27 @@ const ProductList = ({ products, isMobile, isMyList }: Props) => {
             </Box>
           </div>
 
+          {isLoading && (
+            <Box
+              sx={{
+                padding: "12px",
+                textAlign: "center",
+                color: "var(--color-primary-600)",
+                fontWeight: "500",
+              }}
+            >
+              상품을 검색하는 중이에요🔍
+            </Box>
+          )}
+
           <ul className={classes["product-list"]}>
             {filteredProducts && filteredProducts.length > 0 ? (
               filteredProducts.map((product) => {
                 return <ProductItem key={product._id} product={product} />;
               })
-            ) : (
+            ) : !isLoading ? (
               <p>해당 위치와 날짜에 등록된 주차장이 없어요😭</p>
-            )}
+            ) : null}
           </ul>
         </Box>
       ) : (
@@ -202,14 +216,28 @@ const ProductList = ({ products, isMobile, isMyList }: Props) => {
               </FormControl>
             </Box>
           </div>
+
+          {isLoading && (
+            <Box
+              sx={{
+                padding: "12px",
+                textAlign: "center",
+                color: "var(--color-primary-600)",
+                fontWeight: "500",
+              }}
+            >
+              상품을 검색하는 중이에요🔍
+            </Box>
+          )}
+
           <ul className={classes["product-list"]}>
             {filteredProducts && filteredProducts.length > 0 ? (
               filteredProducts.map((product) => {
                 return <ProductItem key={product._id} product={product} />;
               })
-            ) : (
+            ) : !isLoading ? (
               <p>해당 위치와 날짜에 등록된 주차장이 없어요😭</p>
-            )}
+            ) : null}
           </ul>
         </Box>
       )}
