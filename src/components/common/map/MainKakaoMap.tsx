@@ -95,7 +95,7 @@ const MainKakaoMap = ({
 
   // [안전장치 2] useEffect 무한 루프 방지
   // searchInfo 객체 자체가 아니라 내부 값(primitive)이 변할 때만 실행
-  useEffect(() => {
+  useEffect(function triggerSearch() {
     if (mapExist) {
       searchProducts();
     }
@@ -143,9 +143,7 @@ const MainKakaoMap = ({
         style={{ height: "100vh" }}
         level={4}
         onCreate={handleCreate} // 메모이즈된 핸들러 사용
-        onZoomChanged={() => {
-          searchProducts();
-        }}
+        onZoomChanged={searchProducts}
         onDragEnd={() => {
           searchProducts();
           setSelectedMarker(null);
