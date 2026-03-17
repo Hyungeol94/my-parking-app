@@ -42,7 +42,7 @@ const MyProfile = () => {
   const fontSize = "1.2rem";
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useEffect(function checkLogin() {
     isLoggedIn
       ? fetchAndSetMyInfo()
       : (() => {
