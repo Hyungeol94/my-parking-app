@@ -66,7 +66,7 @@ const MyProfileEdit = () => {
     setIsLoading(false)
   };
 
-  useEffect(()=>{
+  useEffect(function populateField () {
     fetchAndSetMyInfo()
   },[])
 
