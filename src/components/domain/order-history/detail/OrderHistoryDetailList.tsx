@@ -17,7 +17,7 @@ const OrderHistoryDetailList = () => {
   const [reviewData, setReviewData] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  useEffect(function queryReviews() {
     const getReplyData = async () => {
       const res: ReplyCheck = await instance(`/replies/${orderId}`);
       res && setLoading(true);

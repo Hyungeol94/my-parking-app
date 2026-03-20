@@ -11,7 +11,7 @@ const SellerRepliesList: React.FC = () => {
   const [RepliesListData, setRepliesList] = useState([]);
   const axiosInstance = useCustomAxios();
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
+  useEffect(function queryReviews() {
     const getRepliesData = async () => {
       try {
         const response = await axiosInstance.get(`/replies/seller/${sellerId}`);

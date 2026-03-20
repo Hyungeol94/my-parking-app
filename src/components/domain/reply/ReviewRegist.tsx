@@ -28,7 +28,7 @@ const ReviewRegist: React.FC = () => {
     }))
   );
 
-  useEffect(() => {
+  useEffect(function queryDetails () {
     //product id를 받아 상품 상세 조회 data 가져오기
     const getProductDetailData = async () => {
       await axiosInstance.get(`/products/${productId}`);

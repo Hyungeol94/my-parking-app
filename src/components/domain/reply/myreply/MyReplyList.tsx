@@ -10,7 +10,7 @@ const MyReplyList: React.FC = () => {
   const [myReplies, setMyReplies] = useState<MyRepliesItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useEffect(function queryReviews () {
     const getReplies = async () => {
       const response = await axiosInstance<MyReplies>("/replies");
       setLoading(false);
