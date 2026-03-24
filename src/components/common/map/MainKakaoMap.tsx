@@ -1,4 +1,5 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import axios from 'axios';
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import {
   Map,
   MapMarker,
@@ -48,6 +49,7 @@ const MainKakaoMap = ({
   const [isOverlayOpen, setIsOverlayOpen] = useState<boolean | undefined>(false);
   const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
   const [_, setIsBtnClick] = useState<boolean>(false);
+  const controllerRef = useRef<AbortController | null>(null);
 
   const { setIsToastOpen, setAlertText } = useThemeSlice(
     useShallow((state) => ({ 
@@ -71,12 +73,15 @@ const MainKakaoMap = ({
   // [안전장치 1] 함수 재생성 방지 (의존성에서 Slice 함수 제외)
   const searchProducts = useCallback(async () => {
     if (!map) return;
+    controllerRef.current?.abort()
+    controllerRef.current = new AbortController()
+    const signal = controllerRef.current.signal
 
     try {
       setIsLoading(true);
       const bound = map.getBounds();
       // searchInfo 객체 전체가 아니라 period만 사용
-      const res = await searchItemsInThisBound(bound, searchInfo.period);
+      const res = await searchItemsInThisBound(bound, searchInfo.period, {signal: signal});
 
       // 마커는 서버에서 받은 전체 데이터 사용
       setMarkers(res); 
@@ -84,12 +89,20 @@ const MainKakaoMap = ({
       // ProductList에는 현재 bound 내부의 제품만 전달
       const filteredProducts = filterProductsInBound(res, bound);
       setProducts(filteredProducts); 
-    } catch (error) {
-      console.error('상품 검색 중 에러 발생:', error);
+    } catch (error: unknown) {
+      if (error &&
+            error instanceof axios.CanceledError) { 
+              console.log("aborted")
+              return
+            }
+
       setMarkers([]);
       setProducts([]);
-    } finally {
       setIsLoading(false);
+    } finally {
+      if (!signal.aborted) {
+      setIsLoading(false);
+    }
     }
   }, [map, searchInfo.period, setProducts, setIsLoading, filterProductsInBound]); // searchItemsInThisBound 제거됨 (안전)
 
