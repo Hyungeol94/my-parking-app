@@ -1,11 +1,12 @@
 {
+  "$schema" : "https://json.schemastore.org/tsconfig.json",
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["kakao.maps.d.ts"],
+    "types": ["kakao.maps.d.ts", "vite/client"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",

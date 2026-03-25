@@ -10,13 +10,12 @@ const MyReplyList: React.FC = () => {
   const [myReplies, setMyReplies] = useState<MyRepliesItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getReplies = async () => {
+  useEffect(function queryReviews () {
+    (async () => {
       const response = await axiosInstance<MyReplies>("/replies");
       setLoading(false);
       return setMyReplies(response.data.item);
-    };
-    getReplies();
+    })();
   }, []);
 
   return (
