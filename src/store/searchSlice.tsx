@@ -4,8 +4,11 @@ import { BASE_URL } from "../services/BaseUrl";
 
 const requestItemsInThisBoundAndPeriod: (
   bound: kakao.maps.LatLngBounds,
-  period?: string[] | undefined
-) => Promise<ProductListType> = async (bound, period?) => {
+  period?: string[] | undefined,
+  options?: {
+    signal? : AbortSignal
+  }
+) => Promise<ProductListType> = async (bound, period?, options?) => {
   const sw: kakao.maps.LatLng = bound.getSouthWest();
   const ne: kakao.maps.LatLng = bound.getNorthEast();
 
@@ -21,12 +24,15 @@ const requestItemsInThisBoundAndPeriod: (
 
   try {
     const response = await axios.get<string, { data: ProductListResType }>(
-      query
+      query, options
     );
     if (response.data.ok === 1) {
       return response.data.item;
     }
   } catch (error: unknown) {
+    if (axios.isCancel(error)) {
+        throw error;
+    }
     if (axios.isAxiosError(error)){
       if (error.response) {
         alert(error.response.data.message);
@@ -42,7 +48,7 @@ export const createSearchSlice: StateCreator<SearchSlice, []> = () => ({
   searchItemsInThisBound: (bound) => {
     return requestItemsInThisBoundAndPeriod(bound);
   },
-  searchItemsInThisBoundAndPeriod: (bound, period?) => {
-    return requestItemsInThisBoundAndPeriod(bound, period);
+  searchItemsInThisBoundAndPeriod: (bound, period?, options?) => {
+    return requestItemsInThisBoundAndPeriod(bound, period, options);
   },
 });
