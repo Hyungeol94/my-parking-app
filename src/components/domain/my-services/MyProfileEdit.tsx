@@ -37,37 +37,35 @@ const MyProfileEdit = () => {
     }))
   )
 
-  const fetchAndSetMyInfo = async () => {
-    setIsLoading(true)
-    const myInfo = await getMyInfo(id);
-    setMyInfo(myInfo)
-
-    const userExtraInfo: ExtraType = {...new UserExtraInfo(), ...myInfo.extra}
-    const currentInfo: Partial<UserDetailInfo> = {...myInfo}
-    delete currentInfo['extra']
-    const userBasicInfo: UserBasicInfoType = {...currentInfo} as UserBasicInfoType
-    //userInputRef object 생성
-    setUserInputRef(
-      Object.keys(userBasicInfo).reduce((acc, key) => {
-      const myInputRef: React.MutableRefObject<HTMLInputElement|null> = createRef();
-      acc[key as keyof UserBasicInfoType] = myInputRef;
-      return acc;
-      }, {} as { [key in keyof UserBasicInfoType]: React.MutableRefObject<HTMLInputElement|null> })
-    )
-
-    //userExtraInputRef object 생성
-    setUserExtraInputRef(
-      Object.keys(userExtraInfo).reduce((acc, key) => {
-      const myInputRef: React.MutableRefObject<HTMLInputElement|null> = createRef();
-      acc[key as keyof Required<ExtraType>] = myInputRef;
-      return acc;
-      }, {} as { [key in keyof Required<ExtraType>]: React.MutableRefObject<HTMLInputElement|null> })
-    )
-    setIsLoading(false)
-  };
-
   useEffect(function populateField () {
-    fetchAndSetMyInfo()
+    (async () => {
+      setIsLoading(true)
+      const myInfo = await getMyInfo(id);
+      setMyInfo(myInfo)
+
+      const userExtraInfo: ExtraType = {...new UserExtraInfo(), ...myInfo.extra}
+      const currentInfo: Partial<UserDetailInfo> = {...myInfo}
+      delete currentInfo['extra']
+      const userBasicInfo: UserBasicInfoType = {...currentInfo} as UserBasicInfoType
+      //userInputRef object 생성
+      setUserInputRef(
+        Object.keys(userBasicInfo).reduce((acc, key) => {
+        const myInputRef: React.MutableRefObject<HTMLInputElement|null> = createRef();
+        acc[key as keyof UserBasicInfoType] = myInputRef;
+        return acc;
+        }, {} as { [key in keyof UserBasicInfoType]: React.MutableRefObject<HTMLInputElement|null> })
+      )
+
+      //userExtraInputRef object 생성
+      setUserExtraInputRef(
+        Object.keys(userExtraInfo).reduce((acc, key) => {
+        const myInputRef: React.MutableRefObject<HTMLInputElement|null> = createRef();
+        acc[key as keyof Required<ExtraType>] = myInputRef;
+        return acc;
+        }, {} as { [key in keyof Required<ExtraType>]: React.MutableRefObject<HTMLInputElement|null> })
+      )
+      setIsLoading(false)
+    })();
   },[])
 
   

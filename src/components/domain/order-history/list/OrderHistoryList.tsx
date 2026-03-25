@@ -19,15 +19,13 @@ const OrderHistoryList: React.FC = () => {
   const axiosInstance = useCustomAxios();
 
   useEffect(function queryOrders () {
-    const fn = async () => {
+    (async () => {
       //orders 로 주문 목록 조회 데이터
       const orders = await axiosInstance<OrderHistoryData>("/orders");
       setLoading(false);
       setGetOrderHistoryData(orders.data.item);
       return
-    };
-
-    fn();
+    })();
   }, []);
 
   const handleNavigate = (_id: number, productItems: OrderHistoryProduct) => {

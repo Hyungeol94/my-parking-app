@@ -11,8 +11,10 @@ const SellerRepliesList: React.FC = () => {
   const [RepliesListData, setRepliesList] = useState([]);
   const axiosInstance = useCustomAxios();
   const [loading, setLoading] = useState(true);
+
+  
   useEffect(function queryReviews() {
-    const getRepliesData = async () => {
+    (async () => {
       try {
         const response = await axiosInstance.get(`/replies/seller/${sellerId}`);
         setLoading(false);
@@ -20,10 +22,10 @@ const SellerRepliesList: React.FC = () => {
       } catch (error) {
         console.error("리뷰 리스트 에러");
       }
-    };
-
-    getRepliesData();
+    })();
   }, []);
+
+
   return (
     <>
       <h2 className={classes.h2}>판매자 후기 목록</h2>

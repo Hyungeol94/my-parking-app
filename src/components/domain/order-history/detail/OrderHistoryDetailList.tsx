@@ -18,14 +18,12 @@ const OrderHistoryDetailList = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(function queryReviews() {
-    const getReplyData = async () => {
+    (async () => {
       const res: ReplyCheck = await instance(`/replies/${orderId}`);
       res && setLoading(true);
       //리뷰 데이터가 있다면 true 로 변경
       res.data.item[0]?.content && setReviewData(true);
-    };
-
-    getReplyData();
+    })();
   }, []);
 
   return (

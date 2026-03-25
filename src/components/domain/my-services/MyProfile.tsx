@@ -34,20 +34,24 @@ const MyProfile = () => {
   )
   const id = userBasicInfo._id
   const navigate = useNavigate();
-  const fetchAndSetMyInfo = async () => {
-    setLoading(true);
-    setMyInfo(await getMyInfo(id));
-    setLoading(false);
-  };
+
   const fontSize = "1.2rem";
   const [loading, setLoading] = useState(true);
 
-  useEffect(function checkLogin() {
-    isLoggedIn
-      ? fetchAndSetMyInfo()
-      : (() => {
+  useEffect(function queryMyInfo() {
+    const fn = async () => {
+      setLoading(true);
+      setMyInfo(await getMyInfo(id));
+      setLoading(false);
+    };
+
+    const redirect = () => {
           alert("로그인이 필요합니다"), navigate("/login");
-        })();
+      }
+
+    isLoggedIn
+      ? fn()
+      : redirect();
   }, []);
 
   return ( loading? (<Loading/>) : !isLoggedIn ? (

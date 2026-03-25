@@ -11,12 +11,11 @@ const MyReplyList: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(function queryReviews () {
-    const getReplies = async () => {
+    (async () => {
       const response = await axiosInstance<MyReplies>("/replies");
       setLoading(false);
       return setMyReplies(response.data.item);
-    };
-    getReplies();
+    })();
   }, []);
 
   return (

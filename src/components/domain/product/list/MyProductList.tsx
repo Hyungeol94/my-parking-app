@@ -15,13 +15,11 @@ const MyProductList = () => {
   const [myProducts, setMyProducts] = useState<ProductListType>([]);
 
   useEffect(function queryProducts () {
-    const fn = async () => {
+    (async () => {
       setLoading(true);
       setMyProducts(await getMyProducts());
       setLoading(false);
-    };
-
-    fn();
+    })();
   }, []);
 
   return (

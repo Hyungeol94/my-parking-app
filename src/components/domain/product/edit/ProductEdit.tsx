@@ -36,7 +36,7 @@ const ProductEdit = () => {
   });
 
     useEffect(function queryProduct() {
-      const fn = async () => {
+      (async () => {
         try {
           const response = await axiosInstance<ProductItemResType>(
             `/products/${productId}`
@@ -59,8 +59,7 @@ const ProductEdit = () => {
         } catch (err) {
           console.error("해당 게시글을 불러오는데 실패하였습니다", err);
         }
-    };
-    fn();
+    })();
   }, [productId]);
 
 
