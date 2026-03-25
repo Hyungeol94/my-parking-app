@@ -13,14 +13,13 @@ const MyProductList = () => {
   const isMobile = MediaQueryMain();
   const getMyProducts = useMyPageSlice().getMyProducts
   const [myProducts, setMyProducts] = useState<ProductListType>([]);
-  const getAndSetMyProducts = async () => {
-    setLoading(true);
-    setMyProducts(await getMyProducts());
-    setLoading(false);
-  };
 
-  useEffect(() => {
-    getAndSetMyProducts();
+  useEffect(function queryProducts () {
+    (async () => {
+      setLoading(true);
+      setMyProducts(await getMyProducts());
+      setLoading(false);
+    })();
   }, []);
 
   return (

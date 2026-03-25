@@ -35,30 +35,33 @@ const ProductEdit = () => {
     },
   });
 
-  const handleGetProduct = async () => {
-    try {
-      const response = await axiosInstance<ProductItemResType>(
-        `/products/${productId}`
-      );
-      const resItem = response.data.item;
-      setInitialProduct({
-        name: resItem.name,
-        content: resItem.content,
-        price: Number(resItem.price),
-        mainImages: resItem.mainImages,
-        extra: {
-          startDate: resItem.extra?.startDate,
-          endDate: resItem.extra?.endDate,
-          address: resItem.extra?.address,
-          lat: resItem.extra?.lat,
-          lng: resItem.extra?.lng,
-        },
-      });
-      setLoading(false);
-    } catch (err) {
-      console.error("해당 게시글을 불러오는데 실패하였습니다", err);
-    }
-  };
+    useEffect(function queryProduct() {
+      (async () => {
+        try {
+          const response = await axiosInstance<ProductItemResType>(
+            `/products/${productId}`
+          );
+          const resItem = response.data.item;
+          setInitialProduct({
+            name: resItem.name,
+            content: resItem.content,
+            price: Number(resItem.price),
+            mainImages: resItem.mainImages,
+            extra: {
+              startDate: resItem.extra?.startDate,
+              endDate: resItem.extra?.endDate,
+              address: resItem.extra?.address,
+              lat: resItem.extra?.lat,
+              lng: resItem.extra?.lng,
+            },
+          });
+          setLoading(false);
+        } catch (err) {
+          console.error("해당 게시글을 불러오는데 실패하였습니다", err);
+        }
+    })();
+  }, [productId]);
+
 
   const handleEditSumbit = async (
     updatedData: ProductItemType,
@@ -101,10 +104,6 @@ const ProductEdit = () => {
       console.error("상품 수정에 실패하였습니다", error);
     }
   };
-
-  useEffect(() => {
-    handleGetProduct();
-  }, [productId]);
 
   if (loading) return <Loading />;
   return (
